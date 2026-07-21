@@ -1,0 +1,206 @@
+/*
+ * Claudify — Gemini (gemini.google.com)
+ * Same Claude identity as ChatGPT theme: charcoal / paper / clay / serif responses.
+ */
+
+html.claudify-gpt {
+  --claudify-clay: #d97757;
+  --claudify-paper: #f8f8f6;
+  --claudify-charcoal: #1f1f1e;
+  --claudify-sidebar: #141413;
+  --claudify-elevated: #2c2c2a;
+  --claudify-font-sans: "Claudify Sans", "Source Sans 3", ui-sans-serif, system-ui,
+    sans-serif;
+  --claudify-font-serif: "Claudify Serif", "Source Serif 4", Georgia, serif;
+  --claudify-font-mono: "Claudify Mono", "Source Code Pro", ui-monospace, monospace;
+  -webkit-font-smoothing: antialiased;
+  font-family: var(--claudify-font-sans) !important;
+}
+
+/* Surfaces */
+html.claudify-gpt,
+html.claudify-gpt body,
+html.claudify-gpt body.dark-theme,
+html.claudify-gpt .dark-theme,
+html.claudify-gpt chat-app,
+html.claudify-gpt .chat-app,
+html.claudify-gpt main,
+html.claudify-gpt .chat-history,
+html.claudify-gpt .conversation-container,
+html.claudify-gpt .content-wrapper,
+html.claudify-gpt [class*="chat-window"],
+html.claudify-gpt [class*="conversation"] {
+  background: #1f1f1e !important;
+  background-color: #1f1f1e !important;
+  background-image: none !important;
+  color: #f8f8f6 !important;
+  font-family: var(--claudify-font-sans) !important;
+}
+
+/* Light mode when Gemini is not dark */
+html.claudify-gpt:not(.dark):not([dark]):not(.claudify-dark) body:not(.dark-theme) {
+  background: #f8f8f6 !important;
+  color: #111111 !important;
+}
+
+/* Sidebar / sidenav */
+html.claudify-gpt bard-sidenav-container,
+html.claudify-gpt mat-sidenav,
+html.claudify-gpt .sidenav,
+html.claudify-gpt [class*="sidenav"],
+html.claudify-gpt [class*="side-nav"],
+html.claudify-gpt nav,
+html.claudify-gpt aside {
+  background: #141413 !important;
+  background-color: #141413 !important;
+  background-image: none !important;
+  color: #c9c7bb !important;
+  border-color: #f8f8f612 !important;
+  font-family: var(--claudify-font-sans) !important;
+}
+
+html.claudify-gpt .sidenav *,
+html.claudify-gpt [class*="sidenav"] *,
+html.claudify-gpt mat-sidenav *,
+html.claudify-gpt nav *,
+html.claudify-gpt aside * {
+  font-family: var(--claudify-font-sans) !important;
+  color: #c9c7bb !important;
+}
+
+html.claudify-gpt .sidenav a:hover,
+html.claudify-gpt [class*="sidenav"] a:hover,
+html.claudify-gpt nav a:hover {
+  background: #1f1f1e !important;
+  color: #f8f8f6 !important;
+}
+
+/* Kill bottom fades / overlays */
+html.claudify-gpt [class*="gradient"],
+html.claudify-gpt [class*="fade"],
+html.claudify-gpt [class*="scrim"],
+html.claudify-gpt [class*="bottom-container"],
+html.claudify-gpt .input-area,
+html.claudify-gpt .input-area-container,
+html.claudify-gpt [class*="input-area"] {
+  background-image: none !important;
+  mask-image: none !important;
+  -webkit-mask-image: none !important;
+  box-shadow: none !important;
+}
+
+html.claudify-gpt .input-area,
+html.claudify-gpt .input-area-container,
+html.claudify-gpt [class*="input-area"],
+html.claudify-gpt [class*="bottom-container"] {
+  background: #1f1f1e !important;
+  background-color: #1f1f1e !important;
+}
+
+/* Composer */
+html.claudify-gpt .text-input-field,
+html.claudify-gpt .text-input-field_textarea-wrapper,
+html.claudify-gpt .input-area .text-input-field_textarea-wrapper,
+html.claudify-gpt rich-textarea,
+html.claudify-gpt .ql-container,
+html.claudify-gpt [class*="text-input"],
+html.claudify-gpt .claudify-composer {
+  background: #2c2c2a !important;
+  background-color: #2c2c2a !important;
+  border: 1px solid #f8f8f628 !important;
+  border-radius: 1.125rem !important;
+  box-shadow: 0 4px 24px #00000040 !important;
+  font-family: var(--claudify-font-sans) !important;
+  color: #f8f8f6 !important;
+}
+
+html.claudify-gpt .ql-editor,
+html.claudify-gpt rich-textarea,
+html.claudify-gpt [contenteditable="true"],
+html.claudify-gpt textarea {
+  font-family: var(--claudify-font-sans) !important;
+  color: #f8f8f6 !important;
+  caret-color: var(--claudify-clay) !important;
+  font-size: 1rem !important;
+  line-height: 1.55 !important;
+}
+
+/* Model responses — editorial serif */
+html.claudify-gpt .model-response-text,
+html.claudify-gpt .markdown,
+html.claudify-gpt .response-content,
+html.claudify-gpt message-content,
+html.claudify-gpt .model-response,
+html.claudify-gpt [class*="model-response"],
+html.claudify-gpt [class*="response-container"] .markdown,
+html.claudify-gpt .conversation-container .markdown {
+  font-family: var(--claudify-font-serif) !important;
+  font-size: 1.125rem !important;
+  line-height: 1.75 !important;
+  color: #f0eee6 !important;
+  letter-spacing: 0.01em !important;
+}
+
+html.claudify-gpt .model-response-text p,
+html.claudify-gpt .markdown p,
+html.claudify-gpt .markdown li {
+  font-family: var(--claudify-font-serif) !important;
+  color: #f0eee6 !important;
+}
+
+html.claudify-gpt .markdown code,
+html.claudify-gpt .markdown pre,
+html.claudify-gpt .markdown pre code {
+  font-family: var(--claudify-font-mono) !important;
+}
+
+html.claudify-gpt .markdown pre,
+html.claudify-gpt [class*="code-block"] {
+  background: #2c2c2a !important;
+  border: 1px solid #f8f8f622 !important;
+  border-radius: 0.75rem !important;
+}
+
+html.claudify-gpt .markdown a {
+  color: var(--claudify-clay) !important;
+}
+
+/* User query bubbles */
+html.claudify-gpt .query-text,
+html.claudify-gpt [class*="user-query"],
+html.claudify-gpt [class*="query-content"] {
+  font-family: var(--claudify-font-sans) !important;
+  background: #2c2c2a !important;
+  color: #f8f8f6 !important;
+  border-radius: 1.125rem !important;
+}
+
+/* Top bar / headers */
+html.claudify-gpt .top-bar,
+html.claudify-gpt [class*="top-bar"],
+html.claudify-gpt header {
+  background: #1f1f1e !important;
+  background-image: none !important;
+  border-color: #f8f8f612 !important;
+  font-family: var(--claudify-font-sans) !important;
+  color: #c9c7bb !important;
+}
+
+html.claudify-gpt h1,
+html.claudify-gpt .greeting,
+html.claudify-gpt [class*="welcome"] {
+  font-family: var(--claudify-font-serif) !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.02em !important;
+  color: #f8f8f6 !important;
+}
+
+html.claudify-gpt button,
+html.claudify-gpt .mat-mdc-button,
+html.claudify-gpt .mdc-button {
+  font-family: var(--claudify-font-sans) !important;
+}
+
+html.claudify-gpt ::selection {
+  background: color-mix(in srgb, var(--claudify-clay) 38%, transparent);
+}

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Claudify GPT",
-  "version": "1.3.0",
-  "description": "Gives ChatGPT Claude's visual identity — warm paper tones, editorial typography, and refined chat aesthetics.",
+  "version": "1.4.0",
+  "description": "Claude-inspired theme for ChatGPT and Gemini — warm charcoal/paper surfaces, editorial typography, refined chat chrome.",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -18,17 +18,28 @@
       "js": ["content.js"],
       "run_at": "document_start",
       "all_frames": false
+    },
+    {
+      "matches": [
+        "https://gemini.google.com/*"
+      ],
+      "css": ["theme-gemini.css"],
+      "js": ["content-gemini.js"],
+      "run_at": "document_start",
+      "all_frames": false
     }
   ],
   "web_accessible_resources": [
     {
       "resources": [
         "theme.css",
+        "theme-gemini.css",
         "fonts/*"
       ],
       "matches": [
         "https://chatgpt.com/*",
-        "https://chat.openai.com/*"
+        "https://chat.openai.com/*",
+        "https://gemini.google.com/*"
       ]
     }
   ]
