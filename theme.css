@@ -1,0 +1,497 @@
+/*
+ * Claudify GPT — theme.css (v1.3)
+ * Claude tokens: paper #f8f8f6 · charcoal #1f1f1e · sidebar #141413 · elevated #2c2c2a · clay #d97757
+ * Fonts injected by content.js as "Claudify Sans/Serif/Mono"
+ */
+
+html.claudify-gpt {
+  --claudify-clay: #d97757;
+  --claudify-clay-emphasized: #c6613f;
+  --claudify-paper: #f8f8f6;
+  --claudify-charcoal: #1f1f1e;
+  --claudify-sidebar: #141413;
+  --claudify-elevated: #2c2c2a;
+  --claudify-font-sans: "Claudify Sans", "Source Sans 3", ui-sans-serif, system-ui,
+    sans-serif;
+  --claudify-font-serif: "Claudify Serif", "Source Serif 4", Georgia, serif;
+  --claudify-font-mono: "Claudify Mono", "Source Code Pro", ui-monospace, monospace;
+  --claudify-radius-composer: 1.125rem;
+  --claudify-prose-max: 44rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--claudify-font-sans) !important;
+}
+
+/* =============================================================================
+   Surfaces — uniform charcoal (kill ChatGPT black + bottom fade)
+   ============================================================================= */
+
+html.claudify-gpt.dark,
+html.claudify-gpt.dark body,
+html.claudify-gpt.dark #__next,
+html.claudify-gpt.dark #root,
+html.claudify-gpt.dark main,
+html.claudify-gpt.dark [role="main"],
+html.claudify-gpt.dark .bg-token-main-surface-primary,
+html.claudify-gpt.dark .bg-token-main-surface-secondary,
+html.claudify-gpt.dark [class*="bg-token-main-surface"],
+html.claudify-gpt.dark .bg-black,
+html.claudify-gpt.dark .bg-gray-950,
+html.claudify-gpt.dark .bg-gray-900,
+html.claudify-gpt.dark .bg-gray-850,
+html.claudify-gpt.dark .bg-gray-800 {
+  background: #1f1f1e !important;
+  background-color: #1f1f1e !important;
+  background-image: none !important;
+  color: #f8f8f6 !important;
+}
+
+/* Sidebar — warmer, slightly deeper than main */
+html.claudify-gpt.dark nav,
+html.claudify-gpt.dark aside,
+html.claudify-gpt.dark .bg-token-sidebar-surface-primary,
+html.claudify-gpt.dark .bg-token-sidebar-surface-secondary,
+html.claudify-gpt.dark [class*="bg-token-sidebar"],
+html.claudify-gpt.dark div[class*="draggable"] > div:first-child {
+  background: #141413 !important;
+  background-color: #141413 !important;
+  background-image: none !important;
+  border-color: #f8f8f612 !important;
+  color: #c2c1b6 !important;
+  font-family: var(--claudify-font-sans) !important;
+}
+
+/* Kill the dark gradient / mask / glow strip under the composer */
+html.claudify-gpt.dark [class*="bg-gradient"],
+html.claudify-gpt.dark [class*="gradient-to"],
+html.claudify-gpt.dark [class*="from-token"],
+html.claudify-gpt.dark [class*="from-black"],
+html.claudify-gpt.dark [class*="from-gray"],
+html.claudify-gpt.dark [class*="from-\[\#000"],
+html.claudify-gpt.dark [class*="via-"],
+html.claudify-gpt.dark [class*="to-transparent"],
+html.claudify-gpt.dark .bg-gradient-to-t,
+html.claudify-gpt.dark .bg-gradient-to-b,
+html.claudify-gpt.dark form[class*="stretch"],
+html.claudify-gpt.dark form[class*="stretch"] > div,
+html.claudify-gpt.dark form[class*="stretch"] > div > div,
+html.claudify-gpt.dark main > div:last-child,
+html.claudify-gpt.dark main > div:last-child > div,
+html.claudify-gpt.dark [class*="sticky"][class*="bottom"],
+html.claudify-gpt.dark [class*="pointer-events-none"] {
+  background: #1f1f1e !important;
+  background-color: #1f1f1e !important;
+  background-image: none !important;
+  --tw-gradient-from: #1f1f1e !important;
+  --tw-gradient-via: #1f1f1e !important;
+  --tw-gradient-to: #1f1f1e !important;
+  --tw-gradient-stops: #1f1f1e, #1f1f1e !important;
+  mask-image: none !important;
+  -webkit-mask-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+html.claudify-gpt.dark [class*="sticky"][class*="bottom"]::before,
+html.claudify-gpt.dark [class*="sticky"][class*="bottom"]::after,
+html.claudify-gpt.dark form[class*="stretch"]::before,
+html.claudify-gpt.dark form[class*="stretch"]::after,
+html.claudify-gpt.dark main::before,
+html.claudify-gpt.dark main::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+/* Disclaimer — no black pill / glow (reads as bottom shade) */
+html.claudify-gpt.dark main [class*="text-token-text-tertiary"],
+html.claudify-gpt.dark main .text-xs,
+html.claudify-gpt.dark main [class*="shadow"],
+html.claudify-gpt.dark main [class*="drop-shadow"] {
+  box-shadow: none !important;
+  filter: none !important;
+  text-shadow: none !important;
+}
+
+html.claudify-gpt:not(.dark),
+html.claudify-gpt:not(.dark) body,
+html.claudify-gpt:not(.dark) #__next,
+html.claudify-gpt:not(.dark) main,
+html.claudify-gpt:not(.dark) .bg-token-main-surface-primary {
+  background: #f8f8f6 !important;
+  background-color: #f8f8f6 !important;
+  background-image: none !important;
+  color: #111111 !important;
+}
+
+html.claudify-gpt:not(.dark) nav,
+html.claudify-gpt:not(.dark) aside,
+html.claudify-gpt:not(.dark) [class*="bg-token-sidebar"] {
+  background: #f0efe9 !important;
+  background-color: #f0efe9 !important;
+  color: #373733 !important;
+}
+
+/* Design tokens */
+html.claudify-gpt.dark {
+  color-scheme: dark !important;
+  --main-surface-primary: #1f1f1e !important;
+  --main-surface-secondary: #141413 !important;
+  --main-surface-tertiary: #2c2c2a !important;
+  --bg-primary: #1f1f1e !important;
+  --bg-secondary: #2c2c2a !important;
+  --bg-tertiary: #373734 !important;
+  --sidebar-surface-primary: #141413 !important;
+  --sidebar-surface-secondary: #1f1f1e !important;
+  --component-sidebar-bg: #141413 !important;
+  --sidebar-body-primary: #e8e6df !important;
+  --sidebar-icon: #a8a69c !important;
+  --text-primary: #f8f8f6 !important;
+  --text-secondary: #c2c1b6 !important;
+  --text-tertiary: #96948b !important;
+  --border-default: #f8f8f622 !important;
+  --composer-surface: #2c2c2a !important;
+  --composer-surface-primary: #2c2c2a !important;
+  --message-surface: #2c2c2a !important;
+  --theme-user-msg-bg: #2c2c2a !important;
+  --theme-user-msg-text: #f8f8f6 !important;
+  --default-theme-user-msg-bg: #2c2c2a !important;
+  --default-theme-user-msg-text: #f8f8f6 !important;
+  --link: #e89a7d !important;
+  --bg-accent-static: #d97757 !important;
+  --gray-700: #454442 !important;
+  --gray-750: #2c2c2a !important;
+  --gray-800: #1f1f1e !important;
+  --gray-850: #1a1a19 !important;
+  --gray-900: #141413 !important;
+  --gray-950: #111110 !important;
+}
+
+html.claudify-gpt:not(.dark) {
+  color-scheme: light !important;
+  --main-surface-primary: #f8f8f6 !important;
+  --main-surface-secondary: #ffffff !important;
+  --bg-primary: #f8f8f6 !important;
+  --bg-secondary: #f3f3f0 !important;
+  --sidebar-surface-primary: #f0efe9 !important;
+  --component-sidebar-bg: #f0efe9 !important;
+  --text-primary: #111111 !important;
+  --text-secondary: #373733 !important;
+  --text-tertiary: #7b7974 !important;
+  --composer-surface-primary: #ffffff !important;
+  --theme-user-msg-bg: #efeeeb !important;
+  --theme-user-msg-text: #111111 !important;
+  --link: #c6613f !important;
+}
+
+/* =============================================================================
+   Sidebar type + color (warm mineral, not cool gray/white)
+   ============================================================================= */
+
+html.claudify-gpt nav,
+html.claudify-gpt aside,
+html.claudify-gpt nav *,
+html.claudify-gpt aside * {
+  font-family: var(--claudify-font-sans) !important;
+}
+
+html.claudify-gpt.dark nav a,
+html.claudify-gpt.dark aside a,
+html.claudify-gpt.dark nav button,
+html.claudify-gpt.dark aside button,
+html.claudify-gpt.dark nav span,
+html.claudify-gpt.dark aside span,
+html.claudify-gpt.dark nav .text-token-text-primary,
+html.claudify-gpt.dark nav .text-token-text-secondary {
+  color: #c9c7bb !important;
+  fill: #c9c7bb !important;
+}
+
+html.claudify-gpt.dark nav a:hover,
+html.claudify-gpt.dark aside a:hover,
+html.claudify-gpt.dark nav button:hover,
+html.claudify-gpt.dark aside button:hover,
+html.claudify-gpt.dark nav a:hover span,
+html.claudify-gpt.dark nav button:hover span {
+  color: #f8f8f6 !important;
+  background-color: #1f1f1e !important;
+}
+
+html.claudify-gpt.dark nav h2,
+html.claudify-gpt.dark nav h3,
+html.claudify-gpt.dark aside h2,
+html.claudify-gpt.dark aside h3,
+html.claudify-gpt.dark nav .text-token-text-tertiary,
+html.claudify-gpt.dark aside .text-token-text-tertiary {
+  color: #8a887e !important;
+  font-size: 0.72rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.01em !important;
+  text-transform: none !important;
+}
+
+html.claudify-gpt.dark nav svg,
+html.claudify-gpt.dark aside svg {
+  color: #a8a69c !important;
+  stroke: #a8a69c !important;
+}
+
+html.claudify-gpt nav a,
+html.claudify-gpt aside a,
+html.claudify-gpt nav button {
+  border-radius: 0.5rem !important;
+  font-size: 0.9rem !important;
+  font-weight: 400 !important;
+}
+
+html.claudify-gpt.dark nav a[class*="border"],
+html.claudify-gpt.dark nav button[class*="border"] {
+  border-color: #f8f8f618 !important;
+  background: transparent !important;
+}
+
+/* ChatGPT wordmark stays, editorial serif */
+html.claudify-gpt nav a[href="/"],
+html.claudify-gpt nav a[href="https://chatgpt.com/"],
+html.claudify-gpt header a[href="/"] {
+  font-family: var(--claudify-font-serif) !important;
+  font-weight: 500 !important;
+  font-size: 1.05rem !important;
+  letter-spacing: -0.02em !important;
+  color: #f8f8f6 !important;
+}
+
+/* =============================================================================
+   Messages
+   ============================================================================= */
+
+html.claudify-gpt [data-message-author-role="user"],
+html.claudify-gpt [data-message-author-role="user"] * {
+  font-family: var(--claudify-font-sans) !important;
+}
+
+html.claudify-gpt.dark [data-message-author-role="user"] .user-message-bubble-color,
+html.claudify-gpt.dark [data-message-author-role="user"] .bg-token-message-surface,
+html.claudify-gpt.dark [data-message-author-role="user"] [class*="bg-token-message"] {
+  background-color: #2c2c2a !important;
+  color: #f8f8f6 !important;
+  border-radius: 1.125rem !important;
+  border: 1px solid #f8f8f614 !important;
+}
+
+/* Assistant — force serif on every text node in the turn */
+html.claudify-gpt [data-message-author-role="assistant"],
+html.claudify-gpt [data-message-author-role="assistant"] .markdown,
+html.claudify-gpt [data-message-author-role="assistant"] .prose,
+html.claudify-gpt [data-message-author-role="assistant"] .markdown *,
+html.claudify-gpt [data-message-author-role="assistant"] p,
+html.claudify-gpt [data-message-author-role="assistant"] li,
+html.claudify-gpt .agent-turn .markdown,
+html.claudify-gpt .agent-turn .markdown p {
+  font-family: var(--claudify-font-serif) !important;
+  font-size: 1.125rem !important;
+  line-height: 1.75 !important;
+  letter-spacing: 0.01em !important;
+  color: #f0eee6 !important;
+  font-weight: 400 !important;
+}
+
+html.claudify-gpt [data-message-author-role="assistant"] button,
+html.claudify-gpt [data-message-author-role="assistant"] button *,
+html.claudify-gpt [data-message-author-role="assistant"] code,
+html.claudify-gpt [data-message-author-role="assistant"] pre,
+html.claudify-gpt [data-message-author-role="assistant"] pre * {
+  font-family: var(--claudify-font-sans) !important;
+  font-size: inherit;
+}
+
+html.claudify-gpt [data-message-author-role="assistant"] code,
+html.claudify-gpt [data-message-author-role="assistant"] pre,
+html.claudify-gpt [data-message-author-role="assistant"] pre code {
+  font-family: var(--claudify-font-mono) !important;
+  font-size: 0.875rem !important;
+  line-height: 1.55 !important;
+  color: #f8f8f6 !important;
+}
+
+html.claudify-gpt .markdown h1,
+html.claudify-gpt .markdown h2,
+html.claudify-gpt .markdown h3,
+html.claudify-gpt .markdown h4 {
+  font-family: var(--claudify-font-serif) !important;
+  font-weight: 600 !important;
+  color: #f8f8f6 !important;
+}
+
+html.claudify-gpt .markdown a {
+  color: var(--claudify-clay) !important;
+}
+
+html.claudify-gpt .markdown blockquote {
+  border-left: 3px solid var(--claudify-clay) !important;
+  color: #c2c1b6 !important;
+  font-style: italic !important;
+}
+
+html.claudify-gpt .markdown pre,
+html.claudify-gpt [class*="code-block"] {
+  background-color: #2c2c2a !important;
+  border: 1px solid #f8f8f622 !important;
+  border-radius: 0.75rem !important;
+}
+
+html.claudify-gpt .markdown :not(pre) > code {
+  background-color: #373734 !important;
+  border-radius: 0.25rem !important;
+  padding: 0.12em 0.4em !important;
+  font-family: var(--claudify-font-mono) !important;
+}
+
+/* =============================================================================
+   Composer — Claude soft rectangle (not ChatGPT pill)
+   ============================================================================= */
+
+html.claudify-gpt #prompt-textarea,
+html.claudify-gpt div[contenteditable="true"],
+html.claudify-gpt [data-testid*="composer"],
+html.claudify-gpt form textarea,
+html.claudify-gpt .claudify-composer,
+html.claudify-gpt .claudify-composer * {
+  font-family: var(--claudify-font-sans) !important;
+}
+
+html.claudify-gpt #prompt-textarea,
+html.claudify-gpt div[contenteditable="true"] {
+  caret-color: var(--claudify-clay) !important;
+  color: #f8f8f6 !important;
+  font-size: 1rem !important;
+  line-height: 1.55 !important;
+}
+
+html.claudify-gpt .claudify-composer,
+html.claudify-gpt form div.claudify-composer,
+html.claudify-gpt.dark form div[class*="rounded-full"]:has(#prompt-textarea),
+html.claudify-gpt.dark form div[class*="rounded-full"]:has([contenteditable="true"]),
+html.claudify-gpt.dark form div[class*="rounded-3xl"]:has(#prompt-textarea),
+html.claudify-gpt.dark form div[class*="rounded-3xl"]:has([contenteditable="true"]),
+html.claudify-gpt.dark form div[class*="rounded-2xl"]:has(#prompt-textarea),
+html.claudify-gpt.dark form div[class*="rounded-2xl"]:has([contenteditable="true"]),
+html.claudify-gpt.dark form div[class*="rounded-"]:has(#prompt-textarea) {
+  border-radius: var(--claudify-radius-composer) !important;
+  max-width: 48rem !important;
+  width: min(100%, 48rem) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  min-height: 5.5rem !important;
+  padding: 0.75rem 0.9rem !important;
+  background: #2c2c2a !important;
+  background-color: #2c2c2a !important;
+  background-image: none !important;
+  border: 1px solid #f8f8f628 !important;
+  box-shadow: 0 4px 24px #00000040 !important;
+}
+
+html.claudify-gpt:not(.dark) .claudify-composer,
+html.claudify-gpt:not(.dark) form div[class*="rounded-"]:has(#prompt-textarea) {
+  background: #ffffff !important;
+  border: 1px solid #1111111f !important;
+  border-radius: var(--claudify-radius-composer) !important;
+  box-shadow: 0 4px 20px #00000012 !important;
+  color: #111111 !important;
+}
+
+html.claudify-gpt:not(.dark) #prompt-textarea,
+html.claudify-gpt:not(.dark) div[contenteditable="true"] {
+  color: #111111 !important;
+}
+
+html.claudify-gpt.dark button[data-testid="send-button"]:not(:disabled),
+html.claudify-gpt.dark button[aria-label*="Send"]:not(:disabled) {
+  background-color: #f8f8f6 !important;
+  color: #111111 !important;
+  border-radius: 999px !important;
+}
+
+html.claudify-gpt.dark .claudify-composer button,
+html.claudify-gpt.dark form button[aria-haspopup="menu"] {
+  color: #c2c1b6 !important;
+  font-family: var(--claudify-font-sans) !important;
+  font-size: 0.8125rem !important;
+}
+
+/* Disclaimer — no dark pill shade */
+html.claudify-gpt.dark [class*="text-token-text-tertiary"] {
+  color: #8a887e !important;
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+html.claudify-gpt main .text-xs,
+html.claudify-gpt [class*="text-xs"][class*="text-token"] {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* =============================================================================
+   Empty state + chrome
+   ============================================================================= */
+
+html.claudify-gpt h1,
+html.claudify-gpt h2 {
+  font-family: var(--claudify-font-serif) !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.02em !important;
+}
+
+html.claudify-gpt .claudify-greeting {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.7rem !important;
+  font-family: var(--claudify-font-serif) !important;
+  font-size: clamp(1.75rem, 2.6vw, 2.15rem) !important;
+  font-weight: 400 !important;
+  color: #f8f8f6 !important;
+  margin: 0 auto 1.75rem !important;
+}
+
+html.claudify-gpt .claudify-star {
+  display: inline-flex !important;
+  color: var(--claudify-clay) !important;
+  width: 1.4rem !important;
+  height: 1.4rem !important;
+}
+
+html.claudify-gpt .claudify-star svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+html.claudify-gpt .claudify-hide-starters {
+  display: none !important;
+}
+
+html.claudify-gpt [role="menu"],
+html.claudify-gpt [data-radix-menu-content] {
+  background-color: #2c2c2a !important;
+  border: 1px solid #f8f8f622 !important;
+  border-radius: 0.75rem !important;
+  font-family: var(--claudify-font-sans) !important;
+}
+
+html.claudify-gpt ::selection {
+  background: color-mix(in srgb, var(--claudify-clay) 38%, transparent);
+}
+
+html.claudify-gpt header,
+html.claudify-gpt [class*="sticky top"] {
+  background: color-mix(in srgb, #1f1f1e 92%, transparent) !important;
+  background-image: none !important;
+  font-family: var(--claudify-font-sans) !important;
+}
+
+html.claudify-gpt:not(.dark) header {
+  background: color-mix(in srgb, #f8f8f6 92%, transparent) !important;
+}
