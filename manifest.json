@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Claudify GPT",
-  "version": "1.4.0",
+  "version": "1.4.4",
   "description": "Claude-inspired theme for ChatGPT and Gemini — warm charcoal/paper surfaces, editorial typography, refined chat chrome.",
   "icons": {
     "16": "icons/icon16.png",

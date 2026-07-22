@@ -245,8 +245,20 @@
   const SANS = '"Claudify Sans", "Source Sans 3", ui-sans-serif, system-ui, sans-serif';
   const SERIF = '"Claudify Serif", "Source Serif 4", Georgia, serif';
 
+  function isComposerShell(el) {
+    return !!(
+      el &&
+      (el.getAttribute?.("data-claudify-composer") === "1" ||
+        el.classList?.contains("claudify-composer") ||
+        el.closest?.("[data-claudify-composer='1']") ||
+        el.closest?.(".claudify-composer"))
+    );
+  }
+
   function flattenSurface(el, bg) {
     if (!el || el.nodeType !== 1) return;
+    // Never flatten the input shell — that was killing Claude's border
+    if (el.classList?.contains("claudify-composer")) return;
     el.style.setProperty("background-image", "none", "important");
     el.style.setProperty("background", bg, "important");
     el.style.setProperty("background-color", bg, "important");
@@ -258,6 +270,270 @@
     el.style.setProperty("-webkit-backdrop-filter", "none", "important");
   }
 
+  function clearChrome(el) {
+    if (!el || el.nodeType !== 1) return;
+    el.style.setProperty("border", "none", "important");
+    el.style.setProperty("border-width", "0", "important");
+    el.style.setProperty("border-color", "transparent", "important");
+    el.style.setProperty("outline", "none", "important");
+    el.style.setProperty("box-shadow", "none", "important");
+    el.style.setProperty("filter", "none", "important");
+    el.style.setProperty("background-image", "none", "important");
+  }
+
+  function injectComposerCSS() {
+    let style = document.getElementById("claudify-composer-css");
+    if (!style) {
+      style = document.createElement("style");
+      style.id = "claudify-composer-css";
+      (document.head || document.documentElement).appendChild(style);
+    }
+    // Rewritten every paint so it always wins over ChatGPT's hydrated classes
+    style.textContent = `
+      html.claudify-gpt [data-claudify-composer="1"],
+      html.claudify-gpt [data-claudify-composer="1"].rounded-full,
+      html.claudify-gpt [data-claudify-composer="1"][class*="rounded-full"],
+      html.claudify-gpt [data-claudify-composer="1"][class*="rounded-3xl"],
+      html.claudify-gpt [data-claudify-composer="1"][class*="rounded-2xl"] {
+        border-radius: 20px !important;
+        min-height: 132px !important;
+        padding: 14px 16px 12px !important;
+        background: #2c2c2a !important;
+        background-color: #2c2c2a !important;
+        background-image: none !important;
+        border: 1px solid #6e6d66 !important;
+        outline: none !important;
+        box-shadow: none !important;
+        filter: none !important;
+        overflow: hidden !important;
+      }
+      html.claudify-gpt:not(.dark) [data-claudify-composer="1"] {
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        border: 1px solid #c8c6bc !important;
+      }
+      html.claudify-gpt [data-claudify-composer="1"] [class*="rounded-full"] {
+        border-radius: 8px !important;
+      }
+      html.claudify-gpt [data-claudify-stack="1"] {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        grid-template-rows: 1fr auto !important;
+        grid-template-areas: "input input" "lead trail" !important;
+        align-items: end !important;
+        column-gap: 8px !important;
+        row-gap: 14px !important;
+        width: 100% !important;
+        min-height: 108px !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      html.claudify-gpt [data-claudify-part="input"] {
+        grid-area: input !important;
+        width: 100% !important;
+        min-height: 52px !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      html.claudify-gpt [data-claudify-part="input"] [contenteditable="true"],
+      html.claudify-gpt [data-claudify-part="input"] #prompt-textarea,
+      html.claudify-gpt [data-claudify-part="input"] textarea {
+        min-height: 52px !important;
+        width: 100% !important;
+      }
+      html.claudify-gpt [data-claudify-part="lead"] {
+        grid-area: lead !important;
+        justify-self: start !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      html.claudify-gpt [data-claudify-part="trail"] {
+        grid-area: trail !important;
+        justify-self: end !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+    `;
+  }
+
+  function findComposerInputs() {
+    const sels = [
+      "#prompt-textarea",
+      'form [contenteditable="true"]',
+      '[data-testid*="composer"] [contenteditable="true"]',
+      "main form [contenteditable=\"true\"]",
+      'main [contenteditable="true"]',
+      "form textarea",
+      'textarea[placeholder*="Ask"]',
+      '[data-placeholder*="Ask"]',
+      ".ProseMirror",
+    ];
+    const found = [];
+    const seen = new Set();
+    for (const sel of sels) {
+      document.querySelectorAll(sel).forEach((el) => {
+        if (seen.has(el)) return;
+        const r = el.getBoundingClientRect();
+        if (r.width < 60 || r.height < 12) return;
+        // Prefer inputs in the lower half (composer lives there)
+        if (r.top < (window.innerHeight || 800) * 0.25 && r.bottom < 120) return;
+        seen.add(el);
+        found.push(el);
+      });
+    }
+    return found;
+  }
+
+  function findComposerShell(input) {
+    let node = input.parentElement;
+    let best = null;
+    while (node && node !== document.body) {
+      const cls = String(node.className || "");
+      const r = node.getBoundingClientRect();
+      const looksRounded = /rounded-(full|3xl|2xl|xl)/.test(cls);
+      const looksComposerSized =
+        r.width > 260 && r.height >= 36 && r.height < 320 && r.bottom > (window.innerHeight || 800) * 0.45;
+      if (looksRounded && looksComposerSized) {
+        best = node; // keep walking → outermost matching card
+      }
+      node = node.parentElement;
+    }
+    // Fallback: nearest wide ancestor near the bottom
+    if (!best) {
+      node = input.parentElement;
+      while (node && node !== document.body) {
+        const r = node.getBoundingClientRect();
+        if (r.width > 320 && r.height >= 44 && r.height < 280) {
+          best = node;
+          break;
+        }
+        node = node.parentElement;
+      }
+    }
+    return best;
+  }
+
+  function layoutComposerStack(shell, input) {
+    const row =
+      shell.querySelector(":scope > div.flex") ||
+      shell.querySelector(":scope > div") ||
+      null;
+    if (!row) return;
+
+    row.setAttribute("data-claudify-stack", "1");
+    const kids = [...row.children];
+    if (kids.length < 2) return;
+
+    kids.forEach((k) => k.removeAttribute("data-claudify-part"));
+
+    let inputIdx = kids.findIndex(
+      (k) => k.contains(input) || k.querySelector("#prompt-textarea, [contenteditable='true'], textarea")
+    );
+    if (inputIdx < 0) inputIdx = Math.min(1, kids.length - 1);
+
+    kids[inputIdx].setAttribute("data-claudify-part", "input");
+    kids.slice(0, inputIdx).forEach((k) => k.setAttribute("data-claudify-part", "lead"));
+    kids.slice(inputIdx + 1).forEach((k) => k.setAttribute("data-claudify-part", "trail"));
+  }
+
+  function styleComposerShells() {
+    injectComposerCSS();
+
+    const dark = isDark();
+    const composerBg = dark ? "#2c2c2a" : "#ffffff";
+    const border = dark ? "#6e6d66" : "#c8c6bc";
+    const inputs = findComposerInputs();
+    const activeShells = new Set();
+
+    inputs.forEach((input) => {
+      const shell = findComposerShell(input);
+      if (!shell) return;
+      activeShells.add(shell);
+
+      shell.classList.add("claudify-composer");
+      shell.setAttribute("data-claudify-composer", "1");
+
+      // Strip ChatGPT capsule class so computed style can't stick to 9999px
+      if (shell.classList.contains("rounded-full")) {
+        shell.classList.remove("rounded-full");
+      }
+      shell.className = String(shell.className || "")
+        .replace(/\brounded-full\b/g, "rounded-2xl")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      shell.style.setProperty("border-radius", "20px", "important");
+      shell.style.setProperty("background", composerBg, "important");
+      shell.style.setProperty("background-color", composerBg, "important");
+      shell.style.setProperty("background-image", "none", "important");
+      shell.style.setProperty("border", `1px solid ${border}`, "important");
+      shell.style.setProperty("outline", "none", "important");
+      shell.style.setProperty("box-shadow", "none", "important");
+      shell.style.setProperty("min-height", "132px", "important");
+      shell.style.setProperty("padding", "14px 16px 12px", "important");
+      shell.style.setProperty("filter", "none", "important");
+
+      shell.querySelectorAll('[class*="rounded"]').forEach((child) => {
+        if (child === shell) return;
+        clearChrome(child);
+      });
+
+      layoutComposerStack(shell, input);
+    });
+
+    // Untag stale shells from prior navigations
+    document.querySelectorAll('[data-claudify-composer="1"]').forEach((el) => {
+      if (activeShells.has(el)) return;
+      el.removeAttribute("data-claudify-composer");
+      el.classList.remove("claudify-composer");
+    });
+  }
+
+  function neutralizeNoticeGlow() {
+    const re =
+      /for safety|keep a copy of this chat|chatgpt can make mistakes/i;
+
+    // Only the smallest text node wrapper — parents were getting borders too
+    document.querySelectorAll("main *").forEach((el) => {
+      if (el.closest(".claudify-composer")) return;
+      if (el.children.length > 2) return;
+      const t = (el.textContent || "").replace(/\s+/g, " ").trim();
+      if (!re.test(t) || t.length > 100) return;
+      // Prefer leaf-ish nodes whose own text is the notice
+      const own = [...el.childNodes]
+        .filter((n) => n.nodeType === 3)
+        .map((n) => n.textContent.trim())
+        .join(" ");
+      if (own && !re.test(own) && el.children.length > 0) return;
+
+      el.classList.add("claudify-notice");
+      clearChrome(el);
+      el.style.setProperty("background", "transparent", "important");
+      el.style.setProperty("background-color", "transparent", "important");
+      el.style.setProperty("color", isDark() ? "#8a887e" : "#7b7974", "important");
+
+      let p = el.parentElement;
+      for (let i = 0; i < 4 && p && !p.classList?.contains("claudify-composer"); i++) {
+        clearChrome(p);
+        // If parent only wraps the notice, clear fill too
+        const pt = (p.textContent || "").replace(/\s+/g, " ").trim();
+        if (re.test(pt) && pt.length < 120) {
+          p.style.setProperty("background", "transparent", "important");
+          p.style.setProperty("background-color", "transparent", "important");
+          p.classList.add("claudify-notice");
+        }
+        p = p.parentElement;
+      }
+    });
+  }
+
   function killGradients() {
     const bg = isDark() ? "#1f1f1e" : "#f8f8f6";
 
@@ -265,41 +541,36 @@
       .querySelectorAll(
         '[class*="gradient"], [class*="from-"], [class*="via-"], [class*="to-token"], [class*="to-transparent"], [class*="sticky"], [class*="mask"], [style*="gradient"], [style*="mask"]'
       )
-      .forEach((el) => flattenSurface(el, bg));
+      .forEach((el) => {
+        if (isComposerShell(el)) return;
+        flattenSurface(el, bg);
+      });
 
-    // Composer ancestry + sticky footers (ChatGPT's black fade lives here)
+    // Sticky footers around the form — skip the composer card itself
     document.querySelectorAll("form").forEach((form) => {
       if (!form.querySelector("#prompt-textarea, [contenteditable='true']")) return;
       let node = form;
       for (let i = 0; i < 6 && node && node !== document.documentElement; i++) {
-        flattenSurface(node, bg);
+        if (!node.classList?.contains("claudify-composer")) {
+          flattenSurface(node, bg);
+        }
         node = node.parentElement;
       }
     });
 
     document
-      .querySelectorAll('main [class*="bottom"], main > div:last-child, [class*="composer"]')
-      .forEach((el) => flattenSurface(el, bg));
+      .querySelectorAll('main [class*="bottom"], main > div:last-child')
+      .forEach((el) => {
+        if (isComposerShell(el)) return;
+        flattenSurface(el, bg);
+      });
 
-    // Disclaimer pill glow reads as a black shade — strip it
-    document.querySelectorAll("main span, main div, main p").forEach((el) => {
-      const t = (el.textContent || "").trim();
-      if (/ChatGPT can make mistakes/i.test(t) && t.length < 80) {
-        flattenSurface(el, "transparent");
-        el.style.setProperty("background", "transparent", "important");
-        el.style.setProperty("background-color", "transparent", "important");
-        let p = el.parentElement;
-        for (let i = 0; i < 3 && p; i++) {
-          flattenSurface(p, "transparent");
-          p.style.setProperty("background", "transparent", "important");
-          p = p.parentElement;
-        }
-      }
-    });
+    neutralizeNoticeGlow();
 
-    // Any element covering the bottom band of the viewport
+    // Bottom-band black overlays (not the composer)
     const vh = window.innerHeight || 800;
-    document.querySelectorAll("main div, main section, form").forEach((el) => {
+    document.querySelectorAll("main div, main section").forEach((el) => {
+      if (isComposerShell(el)) return;
       const r = el.getBoundingClientRect();
       if (r.height < 8 || r.height > vh * 0.55) return;
       if (r.bottom < vh - 4 || r.top < vh * 0.55) return;
@@ -308,10 +579,7 @@
       const bgc = cs.backgroundColor || "";
       if (
         bi.includes("gradient") ||
-        bi.includes("mask") ||
-        bgc === "rgb(0, 0, 0)" ||
-        bgc === "rgba(0, 0, 0, 1)" ||
-        /rgba\(0,\s*0,\s*0/.test(bgc)
+        /rgba?\(\s*0,\s*0,\s*0/.test(bgc)
       ) {
         flattenSurface(el, bg);
       }
@@ -360,8 +628,6 @@
     const dark = isDark();
     const mainBg = dark ? "#1f1f1e" : "#f8f8f6";
     const sideBg = dark ? "#141413" : "#f0efe9";
-    const composerBg = dark ? "#2c2c2a" : "#ffffff";
-    const border = dark ? "#f8f8f628" : "#1111111f";
 
     document
       .querySelectorAll(
@@ -381,31 +647,9 @@
         el.style.setProperty("background-image", "none", "important");
       });
 
-    // Composer: include rounded-full (ChatGPT's current pill shell)
-    document
-      .querySelectorAll(
-        '[class*="rounded-full"], [class*="rounded-3xl"], [class*="rounded-2xl"], [class*="rounded-xl"]'
-      )
-      .forEach((el) => {
-        if (!el.querySelector("#prompt-textarea, [contenteditable='true']")) return;
-        // Prefer the outermost shell that still looks like the composer card
-        const shell =
-          el.closest('[class*="rounded-full"], [class*="rounded-3xl"], [class*="rounded-2xl"]') ||
-          el;
-        shell.classList.add("claudify-composer");
-        shell.style.setProperty("background-color", composerBg, "important");
-        shell.style.setProperty("background-image", "none", "important");
-        shell.style.setProperty("border", `1px solid ${border}`, "important");
-        shell.style.setProperty("border-radius", "1.125rem", "important");
-        shell.style.setProperty(
-          "box-shadow",
-          dark ? "0 4px 24px #00000040" : "0 4px 20px #00000012",
-          "important"
-        );
-        shell.style.setProperty("min-height", "5.5rem", "important");
-      });
-
+    // Flatten fades first, then restyle composer so border wins
     killGradients();
+    styleComposerShells();
     applyType();
   }
 
